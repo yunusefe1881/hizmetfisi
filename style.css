@@ -1,0 +1,60 @@
+:root{--bg:#f1f1f3;--panel:#fff;--ink:#1c1c22;--muted:#63636d;--line:#d4d4da;--brand:#d7262d;--accent:#d7262d;--accent-ink:#fff;--field:#f8f8fa;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#131316;--panel:#1d1d22;--ink:#ececf0;--muted:#a0a0ab;--line:#33333b;--brand:#ff6b70;--accent:#e23a41;--field:#141418;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131316;--panel:#1d1d22;--ink:#ececf0;--muted:#a0a0ab;--line:#33333b;--brand:#ff6b70;--accent:#e23a41;--field:#141418;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 Barlow,system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 40px;display:grid;gap:24px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:960px){.wrap{grid-template-columns:minmax(0,380px) minmax(0,1fr);align-items:start}.pv{position:sticky;top:16px}}
+h1{font:700 22px/1.2 "Barlow Semi Condensed",Barlow,sans-serif;margin:0 0 4px;color:var(--brand)}
+.sub{color:var(--muted);margin:0 0 16px;font-size:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}
+label{display:block;font-weight:600;font-size:14px;margin:14px 0 5px}
+label:first-of-type{margin-top:0}
+input,textarea{width:100%;font:inherit;color:var(--ink);background:var(--field);border:1.5px solid var(--line);border-radius:8px;padding:12px;min-height:48px}
+textarea{min-height:92px;resize:vertical}
+input:focus,textarea:focus,button:focus-visible,a.btn:focus-visible{outline:3px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grp{font:700 12px "Barlow Semi Condensed",sans-serif;letter-spacing:1.4px;color:var(--brand);margin:22px 0 -2px;border-top:1px solid var(--line);padding-top:14px}
+.btns{display:grid;gap:10px;margin-top:20px}
+button,a.btn{font:600 17px/1 Barlow,sans-serif;min-height:52px;border-radius:8px;border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none}
+.primary{background:var(--accent);color:var(--accent-ink)}
+.primary:disabled{opacity:.6;cursor:wait}
+.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.hint{font-size:13px;color:var(--muted);margin:10px 0 0}
+#toast{min-height:20px;font-size:14px;margin-top:10px;font-weight:600}
+.err{color:#d03a3a}.ok{color:#1e8a4c}
+.pv{overflow:hidden}
+
+/* Form kâğıdı: her zaman beyaz, A5 yatay oranında */
+#fis{width:640px;min-height:451px;display:flex;flex-direction:column;background:#fff;color:#111;font-family:Barlow,Arial,sans-serif;font-size:12px;padding:14px 18px 14px;border:1px solid #cfcfd6}
+#fis .hd{display:flex;justify-content:space-between;align-items:center;height:58px}
+#fis .brand{display:flex;align-items:center;gap:10px}
+#fis .logo{width:50px;height:50px;border-radius:50%;border:3.5px solid #d7262d;display:flex;align-items:center;justify-content:center}
+#fis .fn{font:700 27px/1 "Barlow Semi Condensed",Arial,sans-serif;color:#d7262d;letter-spacing:.3px}
+#fis .fn span{color:#1c1c22}
+#fis .fs{font:700 10.5px "Barlow Semi Condensed",Arial,sans-serif;color:#1c1c22;margin-top:2px;letter-spacing:.3px}
+#fis .fs b{color:#d7262d}
+#fis .tt{font:700 19px/1.1 "Barlow Semi Condensed",Arial,sans-serif;text-align:left;color:#1c1c22}
+#fis .bar{background:#d7262d;color:#fff;text-align:center;font:700 15px/22px "Barlow Semi Condensed",Arial,sans-serif;letter-spacing:.8px;height:22px;margin-top:6px}
+#fis .adr{font-size:11.5px;color:#222;line-height:1.35;margin:5px 0 5px;min-height:15px}
+#fis .tb{border:1px solid #222;margin-top:6px;flex:1;display:flex;flex-direction:column}
+#fis .top{display:grid;grid-template-columns:11fr 9fr}
+#fis .lc{display:flex;flex-direction:column;border-right:1px solid #222}
+#fis .ln{display:flex;gap:5px;align-items:baseline;min-height:22px;padding:2px 6px;border-bottom:1px solid #222;line-height:1.2}
+#fis .lc .ln:last-child,#fis .rc .ln:last-child{border-bottom:0}
+#fis .ln i{font-style:normal;color:#444;white-space:nowrap}
+#fis .ln b{font-weight:600;word-break:break-word}
+#fis .lc .adres{flex:1}
+#fis .mz{border-top:1px solid #222;padding:4px 6px 4px;flex:1;min-height:58px}
+#fis .mz strong{font:700 11.5px "Barlow Semi Condensed",Arial,sans-serif;letter-spacing:.4px}
+#fis .mz div{font-weight:500;font-size:12.5px;white-space:pre-wrap;word-break:break-word;margin-top:2px}
+#fis .bt{display:grid;grid-template-columns:30% 20% 25% 25%;border-top:1px solid #222}
+#fis .bt>div{padding:2px 6px;min-height:22px;border-bottom:1px solid #222;border-right:1px solid #222;display:flex;align-items:center;font-size:12px;font-weight:500}
+#fis .bt>div:nth-child(4n){border-right:0}
+#fis .bt>div.v{justify-content:flex-end;font-weight:600}
+#fis .bt>div.nb{border:0;border-top:0}
+#fis .bt>div.last{border-bottom:0}
+#fis .note{font-size:11.5px;color:#222}
+#fis .tot{font:700 14px "Barlow Semi Condensed",Arial,sans-serif;letter-spacing:.5px}
