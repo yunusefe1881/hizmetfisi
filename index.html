@@ -15,7 +15,7 @@
     <h1>Servis formu hazırla</h1>
     <p class="sub">Alanları doldurun, form yanda (telefonda altta) anında oluşur.</p>
     <div class="card">
-      <label for="firmaTel">Firma telefon / WhatsApp numarası</label>
+      <label for="firmaTel">Firma telefon numarası</label>
       <input id="firmaTel" type="tel" inputmode="numeric" maxlength="11" autocomplete="off" placeholder="0 5__ ___ __ __">
       <label for="firmaAdres">Firma adresi (isteğe bağlı)</label>
       <input id="firmaAdres" autocomplete="off" placeholder="Mahalle, sokak, ilçe / il">
@@ -53,12 +53,10 @@
       </div>
       <div class="btns">
         <button class="primary" id="pdfBtn" type="button">PDF olarak kaydet</button>
-        <a class="btn ghost" id="wa" href="#" target="_blank" rel="noopener">Müşteriye WhatsApp’tan yaz</a>
-        <button class="ghost" id="shareBtn" type="button" hidden>PDF’i WhatsApp’a ekle (paylaş)</button>
         <button class="ghost" id="clr" type="button">Formu temizle</button>
       </div>
       <div id="toast" role="status" aria-live="polite"></div>
-      <p class="hint">Toplam otomatik hesaplanır. PDF kaydedilince müşterinin WhatsApp sohbeti açılır. Dosyayı otomatik eklemek için çıkan “PDF’i WhatsApp’a ekle” düğmesini kullanın, ya da ataç simgesinden indirilen PDF’i seçin.</p>
+      <p class="hint">Toplam otomatik hesaplanır.</p>
     </div>
   </section>
 
@@ -73,7 +71,7 @@
       </div>
       <div class="bar">KOMBİ – SOBA – BAKIM – ONARIM</div>
       <div class="adr" id="p_fadres"></div>
-      <div class="bar">Sabit Hat – WhatsApp&nbsp; <span id="p_ftel"></span></div>
+      <div class="bar">Servis Hattı&nbsp; <span id="p_ftel"></span></div>
       <div class="tb">
         <div class="top">
           <div class="lc">
@@ -104,7 +102,6 @@
 const $ = id => document.getElementById(id);
 const ids = ['firmaTel','firmaAdres','ad','tel','il','ilce','tarih','marka','model','garanti','seri','islem','tekn','malz','iscilik'];
 const keep = {firmaTel:'efe_ftel', firmaAdres:'efe_fadres'};
-let lastFile = null;
 
 function store(k, v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){ return null; } }
 function num(v){
@@ -136,9 +133,6 @@ function render(){
   $('p_malz').textContent = fmt(m, v('malz'));
   $('p_iscilik').textContent = fmt(i, v('iscilik'));
   $('p_top').textContent = any ? fmt(top, true) : '';
-  const d = v('tel').replace(/\D/g,'').replace(/^0+/,'').replace(/^90/,'');
-  const msg = 'Merhaba, Efe Teknik Kombi Soba Servisi. Servis formunuz ektedir. Teşekkür ederiz.';
-  $('wa').href = d.length >= 10 ? 'https://wa.me/90' + d + '?text=' + encodeURIComponent(msg) : 'https://wa.me/?text=' + encodeURIComponent(msg);
 }
 function fit(){
   const pv = $('pv'); pv.style.zoom = 1;
@@ -151,20 +145,13 @@ function slug(s){
   return s.replace(/[çğıöşüÇĞİÖŞÜ]/g, c => m[c]).replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'');
 }
 
-ids.forEach(k => $(k).addEventListener('input', () => { lastFile = null; $('shareBtn').hidden = true; if(phones.includes(k)) $(k).value = digits($(k).value); if(keep[k]) store(keep[k], $(k).value); render(); }));
+ids.forEach(k => $(k).addEventListener('input', () => { if(phones.includes(k)) $(k).value = digits($(k).value); if(keep[k]) store(keep[k], $(k).value); render(); }));
 window.addEventListener('resize', fit);
 
 $('clr').addEventListener('click', () => {
   ids.filter(k => !keep[k]).forEach(k => $(k).value = '');
   $('tarih').value = new Date().toISOString().slice(0,10);
-  lastFile = null; $('shareBtn').hidden = true;
   toast(''); render();
-});
-
-$('shareBtn').addEventListener('click', async () => {
-  if(!lastFile) return;
-  try{ await navigator.share({files:[lastFile], title:'Servis Formu', text:'Efe Teknik Kombi Soba Servisi servis formunuz ektedir.'}); }
-  catch(e){ if(!e || e.name !== 'AbortError') toast('Paylaşım açılamadı. PDF’i WhatsApp’ta ataç simgesinden ekleyin.', 'err'); }
 });
 
 $('pdfBtn').addEventListener('click', async () => {
@@ -174,8 +161,6 @@ $('pdfBtn').addEventListener('click', async () => {
   if(typeof html2pdf === 'undefined'){ toast('PDF aracı yüklenemedi. İnternet bağlantısını kontrol edip sayfayı yenileyin.', 'err'); return; }
   const btn = $('pdfBtn'); btn.disabled = true; btn.textContent = 'PDF hazırlanıyor…'; toast('');
   $('pv').style.zoom = 1;
-  let wnd = null;
-  try{ wnd = window.open('', '_blank'); if(wnd) wnd.document.write('<p style="font-family:sans-serif;padding:20px">WhatsApp açılıyor…</p>'); }catch(e){ wnd = null; }
   try{
     const opt = { margin:0, html2canvas:{scale:2.5, backgroundColor:'#ffffff', useCORS:true, scrollX:0, scrollY:0}, jsPDF:{unit:'mm', format:'a5', orientation:'landscape'}, image:{type:'jpeg', quality:0.92} };
     const worker = html2pdf().set(opt).from($('fis'));
@@ -185,13 +170,8 @@ $('pdfBtn').addEventListener('click', async () => {
     try{ dl = window.claude ? await window.claude.use('downloads') : null; }catch(e){ dl = null; }
     if(dl){ await dl.save({filename:name, data:blob}); }
     else { await worker.save(name); }
-    lastFile = new File([blob], name, {type:'application/pdf'});
-    if(navigator.canShare && navigator.canShare({files:[lastFile]})) $('shareBtn').hidden = false;
-    const wurl = $('wa').href;
-    if(wnd){ wnd.location.href = wurl; } else { window.location.href = wurl; }
-    toast('PDF kaydedildi, WhatsApp açılıyor. Dosyayı sohbete ekleyin.', 'ok');
+    toast('PDF kaydedildi.', 'ok');
   }catch(e){
-    if(wnd){ try{ wnd.close(); }catch(x){} }
     if(e && e.code === 'declined') toast('Kaydetme iptal edildi.', '');
     else toast('PDF oluşturulamadı. Sayfayı yenileyip tekrar deneyin.', 'err');
   }finally{
